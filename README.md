@@ -1,64 +1,97 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0d1a,100:3d2f6b&height=120&section=header&text=Jay&fontColor=c4b5fd&fontSize=52&fontAlignY=55&desc=AI%20Engineer%20·%20Builder%20·%20India&descAlignY=78&descSize=14&descColor=8b8b9b" width="100%" />
+<picture>
+  <source media="(prefers-color-scheme: dark)"  srcset="assets/banner.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/banner.svg">
+  <img src="assets/banner.svg" width="100%" alt="BYTEJAYS" />
+</picture>
 
 <br>
 
 <div align="center">
 
-<em>I build systems that detect what humans miss —<br>fraud in transaction graphs, threats in request streams, paths through unknown terrain.</em>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td align="center" width="900">
 
-<br>
+I'm 19. I build systems that have real detection logic, real inference pipelines, and real forensic output —<br>
+not demo dashboards. Things that run in production, surface structure from noise, and generate evidence instead of alarms.
+
+</td>
+</tr>
+</table>
 
 </div>
 
----
+<br>
+
+<img src="assets/divider.svg" width="100%" />
 
 <br>
 
-I'm 19. I work at the intersection of **graph intelligence**, **real-time ML**, and **embedded systems** — building things that have real detection logic, generate forensic evidence, and surface structure from noise. Self-taught, depth-first, always building.
+## &nbsp;About
+
+Self-taught. Depth-first. I work at the intersection of **graph theory**, **machine learning**, and **real-time systems**. Started with Python scripts, ended up building production fraud detection engines, forensic ML pipelines, autonomous robots, and 3D interfaces that make intelligence visible in the browser.
+
+Between the engineering: I think hard about consciousness, the Fermi paradox, and whether the universe is computable. Not as side interests — as a thinking discipline that makes hard technical problems feel tractable.
 
 <br>
 
----
+<img src="assets/divider.svg" width="100%" />
 
 <br>
 
-## Systems
+## &nbsp;Systems
 
 <br>
 
-**Transaction Graph Intelligence Engine** &nbsp;·&nbsp; *Fraud detection across live directed financial graphs*
+<table border="0" cellspacing="0" cellpadding="16" width="100%">
+<tr>
+<td valign="top" width="50%">
 
-Maps every transaction onto a directed graph in real time. Six fraud patterns fire simultaneously — circular transfers, smurfing, mule chains, structuring, layering, velocity clustering. Isolation Forest + SHAP explainability per node. Verdicts output forensic JSON + PDF evidence bundles. Visualized in 3D.
+**[TRANSACTION GRAPH INTELLIGENCE ENGINE](https://github.com/BYTEJAYS/TRANSACTION-GRAPH-ENGINE)**
+
+*Live fraud detection across directed financial graphs · Railway + Vercel*
+
+Every transaction maps onto a directed graph in real time. Six fraud patterns fire simultaneously — circular transfer chains, fan-out smurfing, mule detection, structuring, layering, velocity clustering. Isolation Forest + SHAP scores every node. Verdicts output forensic evidence bundles: JSON + PDF with full BFS propagation traces.
+
+Visualized in 3D. Built to feel like an investigation tool, not a monitoring dashboard.
 
 `Python` · `FastAPI` · `NetworkX` · `scikit-learn` · `SHAP` · `React` · `Three.js` · `WebSocket` · `Docker`
 
-→ [TRANSACTION-GRAPH-ENGINE](https://github.com/BYTEJAYS/TRANSACTION-GRAPH-ENGINE)
+</td>
+<td valign="top" width="50%">
+
+**[BLING — BLUE TEAM FORENSIC ENGINE](https://github.com/BYTEJAYS/bling-blue-team)**
+
+*Post-transaction fraud investigation · National Hackathon · Union Bank of India*
+
+Three-tier ML pipeline for settled transactions. Tier 1 exits 78% of clean transactions in 5ms with fast rules. Suspicious cases escalate through graph gate analysis (15ms) → XGBoost with Indian financial context weighting (30ms). Every alert ships with SHAP explanations and a draft Suspicious Transaction Report. No automated blocking — investigators own every decision point.
+
+`Python` · `FastAPI` · `XGBoost` · `PostgreSQL` · `Redis` · `SHAP` · `Docker` · `Alembic`
+
+</td>
+</tr>
+<tr>
+<td valign="top" colspan="2">
+
+**[3D PORTFOLIO](https://github.com/BYTEJAYS/bytejay-portfolio)**
+
+*Interactive 3D portfolio · Next.js 14 · React Three Fiber · Framer Motion*
+
+A browser-native 3D experience with cinematic section transitions, Three.js neural scenes, a skill galaxy, and an ENIAC-1945 boot sequence on load. Built on Next.js 14 App Router with React Three Fiber, Framer Motion, and Tailwind. The kind of portfolio that makes other portfolios feel static.
+
+`Next.js 14` · `React Three Fiber` · `Three.js` · `Framer Motion` · `TypeScript` · `Tailwind`
+
+</td>
+</tr>
+</table>
 
 <br>
 
-**BLING — Blue Team Forensic Engine** &nbsp;·&nbsp; *National Hackathon · Union Bank of India*
-
-Three-tier ML pipeline for settled transactions. Tier 1 exits 78% of clean transactions in 5ms. Suspicious cases escalate through graph gate analysis → XGBoost with Indian financial context weighting. Every alert includes SHAP explanations and a draft STR report. Investigators own every decision.
-
-`Python` · `FastAPI` · `XGBoost` · `PostgreSQL` · `Redis` · `SHAP` · `Docker`
-
-→ [bling-blue-team](https://github.com/BYTEJAY/bling-blue-team)
+<img src="assets/divider.svg" width="100%" />
 
 <br>
 
-**WALL-E Bot** &nbsp;·&nbsp; *Autonomous navigation robot*
-
-Built from hardware up — obstacle avoidance, object detection, path planning on ROS2 with an OpenCV pipeline on Raspberry Pi. Researching SLAM for unknown environment mapping.
-
-`Python` · `ROS2` · `OpenCV` · `C++` · `Raspberry Pi` · `Arduino`
-
-<br>
-
----
-
-<br>
-
-## Stack
+## &nbsp;Stack
 
 <br>
 
@@ -70,64 +103,78 @@ Built from hardware up — obstacle avoidance, object detection, path planning o
 
 <img src="https://skillicons.dev/icons?i=react,ts,nextjs,vite,cpp,raspberrypi,arduino&theme=dark" height="36" />
 
+<br><br>
+
+<sub>NetworkX &nbsp;·&nbsp; SHAP &nbsp;·&nbsp; XGBoost &nbsp;·&nbsp; Three.js &nbsp;·&nbsp; React Three Fiber &nbsp;·&nbsp; Kafka &nbsp;·&nbsp; ROS2 &nbsp;·&nbsp; Framer Motion &nbsp;·&nbsp; Isolation Forest &nbsp;·&nbsp; GNN</sub>
+
 </div>
 
 <br>
 
-<div align="center">
-<sub>NetworkX &nbsp;·&nbsp; SHAP &nbsp;·&nbsp; XGBoost &nbsp;·&nbsp; Three.js &nbsp;·&nbsp; R3F &nbsp;·&nbsp; Kafka &nbsp;·&nbsp; ROS2 &nbsp;·&nbsp; Framer Motion</sub>
-</div>
+<img src="assets/divider.svg" width="100%" />
 
 <br>
 
----
+## &nbsp;Currently
 
 <br>
-
-## Currently
 
 ```
 →  Integrating ElevenLabs voice intelligence into TGIE
-→  Building AI Sentinel — real-time backend threat detection
+→  Building AI Sentinel — real-time backend threat detection with PyTorch
 →  SLAM research for WALL-E autonomous navigation
 →  Reading: graph transformers · neuromorphic computing · computational neuroscience
 ```
 
 <br>
 
----
+<img src="assets/divider.svg" width="100%" />
 
 <br>
 
-## Signals
+## &nbsp;Signals
+
+<br>
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=BYTEJAY&show_icons=true&hide_border=true&theme=transparent&title_color=a78bfa&icon_color=a78bfa&text_color=8b8b9b&count_private=true&include_all_commits=true" height="160" />
+<img src="https://github-readme-stats.vercel.app/api?username=BYTEJAYS&show_icons=true&hide_border=true&theme=transparent&title_color=a78bfa&icon_color=a78bfa&text_color=8b8b9b&count_private=true&include_all_commits=true" height="158" />
 &nbsp;&nbsp;
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=BYTEJAY&layout=compact&hide_border=true&theme=transparent&title_color=a78bfa&text_color=8b8b9b&langs_count=6" height="160" />
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=BYTEJAYS&layout=compact&hide_border=true&theme=transparent&title_color=a78bfa&text_color=8b8b9b&langs_count=6" height="158" />
 
 </div>
 
 <br>
 
 <div align="center">
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=BYTEJAY&bg_color=0d0d1a&color=a78bfa&line=7c6aff&point=c4b5fd&hide_border=true&area=true&area_color=3730a3" width="100%" />
+<img src="https://github-readme-activity-graph.vercel.app/graph?username=BYTEJAYS&bg_color=0d1117&color=a78bfa&line=7c6aff&point=c4b5fd&hide_border=true&area=true&area_color=2d1f6e" width="100%" />
 </div>
 
 <br>
 
----
+<img src="assets/divider.svg" width="100%" />
+
+<br>
+
+## &nbsp;On Engineering
+
+I want to build systems that outlive the conversation that created them.
+
+Not features — infrastructure. Not demos — instruments. The through-line in everything I build: **structure from noise**. Fraud patterns hiding in clean-looking transaction data. Anomalies buried in normal request streams. A robot learning the topology of a room it's never seen.
+
+The hard problem is never the model. It's building the infrastructure that makes inference *trustworthy* — the graph engine that holds state under load, the pipeline that doesn't drop edges, the interface that makes a complex verdict readable in two seconds.
+
+Long-term: the boundary where graph intelligence meets neuromorphic computing, where real-time ML meets physical machines, where software and hardware converge into a single discipline. That's the frontier I'm building toward.
+
+The questions I can't answer yet — about consciousness, simulation, the fine-tuned constants — make the ones I can answer sharper.
+
+<br>
+
+<img src="assets/divider.svg" width="100%" />
 
 <br>
 
 <div align="center">
-
-Long-term: the boundary where graph intelligence meets neuromorphic computing,<br>
-where inference meets physical machines, where software and hardware converge.<br>
-That's the frontier I'm building toward.
-
-<br>
 
 <sub>
 <a href="mailto:codes404z@gmail.com">codes404z@gmail.com</a>
@@ -137,8 +184,6 @@ That's the frontier I'm building toward.
 Open to research collaborations and ambitious builds
 </sub>
 
+<br><br>
+
 </div>
-
-<br>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:3d2f6b,100:0d0d1a&height=100&section=footer&reversal=true" width="100%" />
