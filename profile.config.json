@@ -1,0 +1,27 @@
+{
+  "display_name": "Jay",
+  "brand_name": "BYTEJAY",
+  "github_username": "BYTEJAYS",
+  "user_at_host": "jay@bytejay",
+  "terminal_title": "jay@bytejay: ~/profile",
+  "command": "neofetch",
+  "role": "Backend Developer / AI Engineer",
+  "focus": "Intelligent backend systems & graph analytics",
+  "location": "India",
+  "os": "macOS · Linux (Docker)",
+  "host": "github.com/BYTEJAYS",
+  "birthdate": "2007-04-27",
+  "languages": ["Python", "JavaScript", "SQL"],
+  "backend": ["FastAPI", "AsyncIO", "WebSockets", "SQLAlchemy", "Pydantic"],
+  "databases": ["PostgreSQL", "SQLite", "Redis"],
+  "infrastructure": ["Docker", "Kafka", "Celery", "Git"],
+  "ai_ml": ["PyTorch", "NumPy", "NetworkX", "Graph Analytics", "Ollama"],
+  "frontend": ["React", "Next.js", "Three.js"],
+  "learning": ["Distributed Systems", "System Design"],
+  "building": ["Fraud-detection graph engines", "Local AI systems"],
+  "contact": {
+    "email": "codes404z@gmail.com",
+    "linkedin": "linkedin.com/in/bytejay",
+    "github": "github.com/BYTEJAYS"
+  }
+}

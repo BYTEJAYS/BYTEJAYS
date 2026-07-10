@@ -1,0 +1,4 @@
+# Runtime deps for scripts/generate_profile.py — stdlib only, nothing to install.
+# scripts/ascii_from_photo.py (local, one-time) additionally needs:
+#   Pillow>=10
+# It is NOT required by the GitHub Actions workflow.
