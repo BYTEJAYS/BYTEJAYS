@@ -47,8 +47,6 @@ CYAN = "#58a6ff"
 ORANGE = "#d29922"
 RED = "#f85149"
 PURPLE = "#b083f0"
-STRIP = ["#484f58", "#f85149", "#d29922", "#3fb950",
-         "#58a6ff", "#b083f0", "#5cb8c4", "#e6edf3"]
 
 # ----------------------------------------------------------------- layout --
 W = 1000
@@ -71,7 +69,8 @@ FONT = ("ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "
 TYPE_DELAY = 0.40     # s before typing starts
 TYPE_STEP = 0.09      # s per typed character
 PRINT_PAUSE = 0.15    # s between command finishing and output printing
-PRINT_RATE = 0.0022   # s of print delay per px of output height
+PRINT_RATE = 0.0022   # s of print delay per px of ascii-art height
+WRITE_STEP = 0.18     # s per right-column line, written one after another
 
 
 def text_el(x: float, y: float, runs, size=FS, cw=CW, weight=None,
@@ -293,53 +292,67 @@ def build() -> str:
                                 size=afs, cw=acw, cls="o",
                                 style=d(art_y0 + i * alh)))
 
-    # ---- right column -----------------------------------------------------
+    # ---- right column: each line written one by one -----------------------
+    # Every line sits under an opaque cover that wipes away left-to-right
+    # (scaleX towards the right edge) at its turn, so the column "writes"
+    # itself sequentially. Covers paint after all text (document order).
+    covers: list[str] = []
+    band_x = COL_X - 4
+    band_w = W - PAD - band_x + 4
+    wr = [0]  # sequential written-line counter
+
+    def wipe(y_top: float, hgt: float) -> None:
+        t0 = out_base + wr[0] * WRITE_STEP
+        covers.append(
+            f'<rect class="w" x="{band_x}" y="{y_top:.1f}" '
+            f'width="{band_w}" height="{hgt:.1f}" fill="{BG}" '
+            f'style="animation-delay:{t0:.2f}s,{t0 + WRITE_STEP:.2f}s"/>')
+        wr[0] += 1
+
     ry = y + max(0.0, (art_h - right_h) / 2)
     for row in expanded:
         if row == "blank":
             ry += LH * 0.75
             continue
         if row == "header":
+            band_top = ry - 13
             body.append(text_el(COL_X, ry, [
                 (cfg["display_name"].lower(), GREEN),
                 ("@", MUTED),
                 (cfg["github_username"], GREEN),
-            ], weight="bold", cls="o", style=d(ry)))
+            ], weight="bold"))
             ry += LH * 0.55
             body.append(
                 f'<line x1="{COL_X}" y1="{ry:.1f}" x2="{W - PAD}" '
-                f'y2="{ry:.1f}" stroke="{BORDER}" stroke-width="1" '
-                f'class="o" style="{d(ry)}"/>')
+                f'y2="{ry:.1f}" stroke="{BORDER}" stroke-width="1"/>')
+            wipe(band_top, ry + 3 - band_top)
             ry += LH
             continue
         label, val_runs, is_first = row
         if label:
-            body.append(text_el(COL_X, ry, [(label, MUTED)],
-                                cls="o", style=d(ry)))
+            body.append(text_el(COL_X, ry, [(label, MUTED)]))
             dots_x0 = COL_X + (len(label) + 1) * CW
             body.append(
                 f'<line x1="{dots_x0:.1f}" y1="{ry - 4:.1f}" '
                 f'x2="{VAL_X - 10}" y2="{ry - 4:.1f}" stroke="{FAINT}" '
                 f'stroke-width="1.5" stroke-dasharray="1.5 4" '
-                f'stroke-linecap="round" class="o" style="{d(ry)}"/>')
-        body.append(text_el(VAL_X, ry, val_runs, cls="o", style=d(ry)))
+                f'stroke-linecap="round"/>')
+        body.append(text_el(VAL_X, ry, val_runs))
+        wipe(ry - 13, 17)
         ry += LH
 
+    body.extend(covers)
     content_bottom = max(art_y0 + art_h, ry)
 
-    # ---- terminal color strip (bottom of right column) --------------------
-    strip_y = content_bottom + 6
-    for i, col in enumerate(STRIP):
-        body.append(f'<rect x="{COL_X + i * 26}" y="{strip_y:.1f}" '
-                    f'width="22" height="11" rx="2" fill="{col}" '
-                    f'class="o" style="{d(strip_y)}"/>')
-    # closing prompt; its block cursor blinks once the output has printed
-    body.append(text_el(PAD, strip_y + 11, prefix,
-                        cls="o", style=d(strip_y + 11)))
-    body.append(text_el(cmd_x, strip_y + 11, [("▊", GREEN)], cls="c2"))
-    blink_start = out_base + (strip_y + 11 - y) * PRINT_RATE
+    # closing prompt appears once the last line is written; cursor blinks
+    write_end = out_base + wr[0] * WRITE_STEP + 0.1
+    end_y = content_bottom + 17
+    body.append(text_el(PAD, end_y, prefix, cls="o",
+                        style=f"animation-delay:{write_end:.2f}s"))
+    body.append(text_el(cmd_x, end_y, [("▊", GREEN)], cls="c2"))
+    blink_start = write_end
 
-    h = int(strip_y + 11 + PAD - 4)
+    h = int(end_y + PAD - 4)
 
     # ---- window chrome -----------------------------------------------------
     title = cfg["terminal_title"]
@@ -363,8 +376,8 @@ def build() -> str:
 
     # ---- animation CSS -----------------------------------------------------
     # .o lines start hidden and "print"; #cur rides the typed command then
-    # hides; .c2 blinks forever. All delays derive from layout, so output
-    # stays deterministic.
+    # hides; .w covers wipe right to write each line; .c2 blinks forever.
+    # All delays derive from layout, so output stays deterministic.
     css = (
         "<style>"
         ".o{opacity:0;animation:o .01s steps(1) both}"
@@ -374,10 +387,14 @@ def build() -> str:
         f"h .01s steps(1) {out_base:.2f}s forwards}}"
         f"@keyframes r{{to{{transform:translateX({len(cmd) * CW:.1f}px)}}}}"
         "@keyframes h{to{opacity:0}}"
+        ".w{transform-box:fill-box;transform-origin:100% 50%;"
+        f"animation:wr {WRITE_STEP:.2f}s steps(28) both,"
+        "h .01s steps(1) forwards}"
+        "@keyframes wr{to{transform:scaleX(0)}}"
         f".c2{{opacity:0;animation:b 1.06s step-end {blink_start:.2f}s infinite}}"
         "@keyframes b{0%,49%{opacity:1}50%,100%{opacity:0}}"
         "@media (prefers-reduced-motion:reduce)"
-        "{.o,.c2{animation:none;opacity:1}#cur{display:none}}"
+        "{.o,.c2{animation:none;opacity:1}#cur,.w{display:none}}"
         "</style>"
     )
 
