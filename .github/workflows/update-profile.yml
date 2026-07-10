@@ -33,10 +33,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- assets/terminal-profile.svg assets/stats-cache.json; then
+          if git diff --quiet -- assets; then
             echo "No changes — skipping commit."
             exit 0
           fi
-          git add assets/terminal-profile.svg assets/stats-cache.json
+          git add assets
           git commit -m "chore: refresh profile card stats"
           git push

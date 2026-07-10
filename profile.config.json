@@ -19,6 +19,11 @@
   "frontend": ["React", "Next.js", "Three.js"],
   "learning": ["Distributed Systems", "System Design"],
   "building": ["Fraud-detection graph engines", "Local AI systems"],
+  "featured_projects": [
+    "TRANSACTION-GRAPH-ENGINE",
+    "bling-blue-team",
+    "bytejay-site"
+  ],
   "contact": {
     "email": "codes404z@gmail.com",
     "linkedin": "linkedin.com/in/bytejay",

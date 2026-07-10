@@ -7,5 +7,27 @@
   "top_languages": [
     "Python",
     "TypeScript"
-  ]
+  ],
+  "projects": {
+    "bling-blue-team": {
+      "description": "Forensic fraud detection engine \u2014 3-tier ML pipeline, XGBoost + SHAP explainability, STR report generation \u00b7 Built for Union Bank of India hackathon",
+      "language": "Python",
+      "stars": 0
+    },
+    "bytejay-site": {
+      "description": "ByteJay \u2014 personal portfolio. Next.js, Tailwind, Framer Motion, and one 3D Saint Bernard.",
+      "language": "TypeScript",
+      "stars": 0
+    },
+    "BYTEJAYS": {
+      "description": "BYTEJAY \u2014 terminal-style profile",
+      "language": "Python",
+      "stars": 0
+    },
+    "TRANSACTION-GRAPH-ENGINE": {
+      "description": "TGIE \u2014 Transaction Graph Intelligence Engine: real-time graph-based fraud detection platform",
+      "language": "Python",
+      "stars": 0
+    }
+  }
 }
