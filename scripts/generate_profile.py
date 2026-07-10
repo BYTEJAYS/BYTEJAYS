@@ -22,6 +22,7 @@ GitHub data handling:
 from __future__ import annotations
 
 import json
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -33,6 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "profile.config.json"
 ART = ROOT / "assets" / "ascii-art.json"
 CACHE = ROOT / "assets" / "stats-cache.json"
+CONTRIB_CACHE = ROOT / "assets" / "contrib-cache.json"
 OUT = ROOT / "assets" / "terminal-profile.svg"
 
 # ---------------------------------------------------------------- palette --
@@ -505,6 +507,158 @@ def build_projects(cfg: dict, stats: dict | None) -> str | None:
         window_chrome(h, f'{cfg["user_at_host"]}: ~/projects'), body)
 
 
+# ------------------------------------------------------------------ snake --
+SNAKE_STEP = 0.05      # s per grid cell the snake moves
+SNAKE_MAX = 30         # segment cap so a busy year stays elegant
+LEVELS = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"]
+
+
+def fetch_contributions(username: str) -> list | None:
+    """Scrape the public contribution calendar: [(iso_date, level), ...]."""
+    try:
+        req = urllib.request.Request(
+            f"https://github.com/users/{username}/contributions",
+            headers={"User-Agent": "bytejay-profile-generator"})
+        with urllib.request.urlopen(req, timeout=30, context=_CTX) as r:
+            html = r.read().decode()
+        cells = re.findall(
+            r'data-date="(\d{4}-\d\d-\d\d)"[^>]*data-level="(\d)"', html)
+        return sorted((d, int(lv)) for d, lv in cells) or None
+    except (urllib.error.URLError, OSError) as e:
+        print(f"warning: contributions unavailable ({e})", file=sys.stderr)
+        return None
+
+
+def build_snake(cfg: dict, contribs: list | None) -> str | None:
+    """Playable-looking snake run over the real contribution graph.
+
+    The snake sweeps the grid serpentine-style; every contribution square
+    it passes is eaten (pop + fade to empty) and the snake grows by one
+    segment — proper Snake rules. One-shot performance, pure CSS.
+    """
+    if not contribs:
+        return None
+    from datetime import date as _date
+
+    # ---- grid: column per week, row per weekday (Sunday = row 0) ----------
+    first = _date.fromisoformat(contribs[0][0])
+    start = first  # GitHub's graph always starts on a Sunday
+    grid: dict[tuple[int, int], int] = {}
+    for iso, lv in contribs:
+        dd = _date.fromisoformat(iso)
+        col = (dd - start).days // 7
+        row = (dd.weekday() + 1) % 7
+        grid[(col, row)] = lv
+    n_cols = max(c for c, _ in grid) + 1
+
+    pitch = (W - 2 * PAD) / 53
+    cell = pitch - 3.5
+    top = BAR_H + 24
+    grid_y = top + 20
+    grid_h = 7 * pitch
+
+    body: list[str] = []
+    cmd = "snake --feed ~/contributions"
+    cmd_x, prefix, out_base = typed_prompt(body, cfg, cmd, top)
+    run_start = out_base + 0.3
+
+    def cx(col: int) -> float:
+        return PAD + col * pitch
+
+    def cy(row: int) -> float:
+        return grid_y + row * pitch
+
+    # ---- serpentine path over existing cells -------------------------------
+    path: list[tuple[int, int]] = []
+    for col in range(n_cols):
+        rows = range(7) if col % 2 == 0 else range(6, -1, -1)
+        path += [(col, r) for r in rows if (col, r) in grid]
+    n = len(path)
+    visit = {cell_: i for i, cell_ in enumerate(path)}
+
+    # ---- contribution cells; lit ones get eaten at their visit time -------
+    cells_svg = []
+    eat_times = []
+    for (col, row), lv in sorted(grid.items()):
+        x, yy = cx(col), cy(row)
+        if lv > 0:
+            t_eat = run_start + visit[(col, row)] * SNAKE_STEP
+            eat_times.append(t_eat)
+            cells_svg.append(
+                f'<rect class="e" x="{x:.1f}" y="{yy:.1f}" width="{cell:.1f}" '
+                f'height="{cell:.1f}" rx="3" fill="{LEVELS[lv]}" '
+                f'style="animation-delay:{t_eat:.2f}s"/>')
+        else:
+            cells_svg.append(
+                f'<rect x="{x:.1f}" y="{yy:.1f}" width="{cell:.1f}" '
+                f'height="{cell:.1f}" rx="3" fill="{LEVELS[0]}"/>')
+    eat_times.sort()
+    body.append(f'<g id="grid" style="animation-delay:{out_base:.2f}s">'
+                + "".join(cells_svg) + "</g>")
+
+    # ---- snake segments: shared path, truncated per segment ---------------
+    # Keyframes only where the path turns (each column entry/exit);
+    # browsers interpolate the straight runs between them.
+    turns = sorted({0, n - 1} | {
+        j for i in range(1, n) if path[i][0] != path[i - 1][0]
+        for j in (i - 1, i)})
+    length = min(4 + len(eat_times), SNAKE_MAX)
+    kf_blocks, seg_rules, seg_rects = [], [], []
+    for s in range(length):
+        end = n - 1 - s
+        if end < 1:
+            break
+        ks = [k for k in turns if k < end] + [end]
+        dur = end * SNAKE_STEP
+        frames = "".join(
+            f"{k / end * 100:.3f}%{{transform:translate("
+            f"{cx(path[k][0]) - cx(path[0][0]):.1f}px,"
+            f"{cy(path[k][1]) - cy(path[0][1]):.1f}px)}}"
+            for k in ks)
+        kf_blocks.append(f"@keyframes m{s}{{{frames}}}")
+        delay = run_start + s * SNAKE_STEP
+        rule = f"#g{s}{{animation:m{s} {dur:.2f}s linear {delay:.2f}s both"
+        if s >= 4:  # grown segment: appears when meal (s - 3) is eaten
+            spawn = eat_times[min(s - 4, len(eat_times) - 1)]
+            rule += f",on .01s steps(1) {spawn:.2f}s forwards}}#g{s}{{opacity:0"
+        rule += "}"
+        seg_rules.append(rule)
+        fill = "#56d364" if s == 0 else GREEN
+        seg_rects.append(
+            f'<rect id="g{s}" x="{cx(path[0][0]):.1f}" y="{cy(path[0][1]):.1f}" '
+            f'width="{cell:.1f}" height="{cell:.1f}" rx="4" fill="{fill}"/>')
+    body.extend(seg_rects)
+
+    # ---- closing prompt -----------------------------------------------------
+    end_t = run_start + n * SNAKE_STEP + 0.2
+    end_y = grid_y + grid_h + 26
+    body.append(text_el(PAD, end_y, prefix, cls="o",
+                        style=f"animation-delay:{end_t:.2f}s"))
+    body.append(text_el(cmd_x, end_y, [("▊", GREEN)], cls="c2"))
+
+    snake_css = (
+        "<style>"
+        f"#grid{{opacity:0;animation:o .01s steps(1) both}}"
+        ".e{transform-box:fill-box;transform-origin:center;"
+        "animation:eat .3s ease-out both}"
+        f"@keyframes eat{{0%{{transform:scale(1)}}45%{{transform:scale(1.35)}}"
+        f"100%{{transform:scale(1);fill:{LEVELS[0]}}}}}"
+        "@keyframes on{to{opacity:1}}"
+        + "".join(kf_blocks) + "".join(seg_rules) +
+        "@media (prefers-reduced-motion:reduce)"
+        "{.e{animation:none}#grid{opacity:1;animation:none}"
+        "[id^=g]{display:none}}"
+        "</style>"
+    )
+
+    h = int(end_y + PAD - 4)
+    return svg_doc(
+        h, "Snake eating Jay's GitHub contribution graph — it grows with "
+           "every contribution eaten",
+        anim_css(len(cmd), out_base, end_t) + snake_css,
+        window_chrome(h, f'{cfg["user_at_host"]}: ~/games/snake'), body)
+
+
 # ----------------------------------------------------------------- buttons --
 def build_button(label: str) -> str:
     """Small static terminal-style link button: `❯ label` in a bordered pill."""
@@ -543,10 +697,19 @@ def main() -> None:
         stats = json.loads(CACHE.read_text())
         print("info: using cached stats", file=sys.stderr)
 
+    contribs = fetch_contributions(cfg["github_username"])
+    if contribs:
+        CONTRIB_CACHE.write_text(json.dumps(contribs) + "\n")
+    elif CONTRIB_CACHE.exists():
+        contribs = [tuple(c) for c in json.loads(CONTRIB_CACHE.read_text())]
+        print("info: using cached contributions", file=sys.stderr)
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     targets = [
         (OUT, lambda: build(cfg, stats)),
         (OUT.parent / "projects-panel.svg", lambda: build_projects(cfg, stats)),
+        (OUT.parent / "contribution-snake.svg",
+         lambda: build_snake(cfg, contribs)),
     ]
     targets += [(OUT.parent / f"btn-{lb}.svg",
                  lambda lb=lb: build_button(lb)) for lb in BUTTONS]

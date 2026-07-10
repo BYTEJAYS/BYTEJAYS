@@ -24,18 +24,14 @@
 
 <br/>
 
-<p align="center"><code>$ snake --feed ~/contributions</code></p>
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BYTEJAYS/BYTEJAYS/output/github-snake-dark.svg" />
+<p align="center">
   <img
-    src="https://raw.githubusercontent.com/BYTEJAYS/BYTEJAYS/output/github-snake.svg"
+    src="assets/contribution-snake.svg"
     width="100%"
-    alt="A snake playing across Jay's GitHub contribution graph, eating every contribution square."
+    alt="Snake game over Jay's real GitHub contribution graph — the snake eats every contribution square and grows one segment per meal."
   />
-</picture>
+</p>
 
-<br/>
 <br/>
 
 <details>
