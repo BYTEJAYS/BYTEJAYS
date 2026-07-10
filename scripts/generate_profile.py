@@ -64,8 +64,18 @@ VAL_CHARS = int((W - PAD - VAL_X) / CW)   # chars available for values
 FONT = ("ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "
         "'Liberation Mono', 'Courier New', monospace")
 
+# -------------------------------------------------------------- animation --
+# The card "replays" a terminal session on every load: the command is typed
+# char-by-char, then the output prints top-to-bottom. Pure CSS inside the
+# SVG (opacity + transform only) so it animates in GitHub's <img> embeds.
+TYPE_DELAY = 0.40     # s before typing starts
+TYPE_STEP = 0.09      # s per typed character
+PRINT_PAUSE = 0.15    # s between command finishing and output printing
+PRINT_RATE = 0.0022   # s of print delay per px of output height
 
-def text_el(x: float, y: float, runs, size=FS, cw=CW, weight=None) -> str:
+
+def text_el(x: float, y: float, runs, size=FS, cw=CW, weight=None,
+            cls=None, style=None) -> str:
     """One <text> line from [(str, color), ...] runs, explicit x per run."""
     spans, col = [], 0
     for t, c in runs:
@@ -75,8 +85,10 @@ def text_el(x: float, y: float, runs, size=FS, cw=CW, weight=None) -> str:
             )
         col += len(t)
     w = f' font-weight="{weight}"' if weight else ""
+    k = f' class="{cls}"' if cls else ""
+    s = f' style="{style}"' if style else ""
     return (f'<text xml:space="preserve" y="{y:.1f}" font-family="{FONT}" '
-            f'font-size="{size:.2f}"{w}>{"".join(spans)}</text>')
+            f'font-size="{size:.2f}"{w}{k}{s}>{"".join(spans)}</text>')
 
 
 def wrap_value(runs, limit):
@@ -252,11 +264,25 @@ def build() -> str:
     art_h = art_lines * alh
     n_lines = max(right_lines, art_lines)
 
-    # ---- prompt line ------------------------------------------------------
-    body.append(text_el(PAD, top, [
-        (cfg["user_at_host"], GREEN), (":", MUTED), ("~", CYAN),
-        ("$ ", MUTED), (cfg["command"], TEXT),
-    ]))
+    # ---- prompt line: static prefix, command typed char-by-char -----------
+    prefix = [(cfg["user_at_host"], GREEN), (":", MUTED), ("~", CYAN),
+              ("$ ", MUTED)]
+    body.append(text_el(PAD, top, prefix))
+    cmd = cfg["command"]
+    cmd_x = PAD + sum(len(t) for t, _ in prefix) * CW
+    for i, ch in enumerate(cmd):
+        body.append(text_el(
+            cmd_x + i * CW, top, [(ch, TEXT)], cls="o",
+            style=f"animation-delay:{TYPE_DELAY + (i + .5) * TYPE_STEP:.2f}s"))
+    type_end = TYPE_DELAY + len(cmd) * TYPE_STEP
+    out_base = type_end + PRINT_PAUSE
+    # block cursor that rides along while the command is typed
+    body.append(f'<rect id="cur" x="{cmd_x:.1f}" y="{top - 11:.1f}" '
+                f'width="{CW:.1f}" height="15" fill="{GREEN}"/>')
+
+    def d(yy: float) -> str:
+        """Print delay for an output line at baseline yy (top-to-bottom)."""
+        return f"animation-delay:{out_base + max(0.0, yy - y) * PRINT_RATE:.2f}s"
 
     # ---- ascii art (vertically centered against the taller column) -------
     art_y0 = y + max(0.0, (right_h - art_h) / 2)
@@ -264,7 +290,8 @@ def build() -> str:
         runs = [(r["t"], r["c"] or FAINT) for r in line]
         if runs:
             body.append(text_el(art_x, art_y0 + i * alh, runs,
-                                size=afs, cw=acw))
+                                size=afs, cw=acw, cls="o",
+                                style=d(art_y0 + i * alh)))
 
     # ---- right column -----------------------------------------------------
     ry = y + max(0.0, (art_h - right_h) / 2)
@@ -277,23 +304,25 @@ def build() -> str:
                 (cfg["display_name"].lower(), GREEN),
                 ("@", MUTED),
                 (cfg["github_username"], GREEN),
-            ], weight="bold"))
+            ], weight="bold", cls="o", style=d(ry)))
             ry += LH * 0.55
             body.append(
                 f'<line x1="{COL_X}" y1="{ry:.1f}" x2="{W - PAD}" '
-                f'y2="{ry:.1f}" stroke="{BORDER}" stroke-width="1"/>')
+                f'y2="{ry:.1f}" stroke="{BORDER}" stroke-width="1" '
+                f'class="o" style="{d(ry)}"/>')
             ry += LH
             continue
         label, val_runs, is_first = row
         if label:
-            body.append(text_el(COL_X, ry, [(label, MUTED)]))
+            body.append(text_el(COL_X, ry, [(label, MUTED)],
+                                cls="o", style=d(ry)))
             dots_x0 = COL_X + (len(label) + 1) * CW
             body.append(
                 f'<line x1="{dots_x0:.1f}" y1="{ry - 4:.1f}" '
                 f'x2="{VAL_X - 10}" y2="{ry - 4:.1f}" stroke="{FAINT}" '
                 f'stroke-width="1.5" stroke-dasharray="1.5 4" '
-                f'stroke-linecap="round"/>')
-        body.append(text_el(VAL_X, ry, val_runs))
+                f'stroke-linecap="round" class="o" style="{d(ry)}"/>')
+        body.append(text_el(VAL_X, ry, val_runs, cls="o", style=d(ry)))
         ry += LH
 
     content_bottom = max(art_y0 + art_h, ry)
@@ -302,12 +331,13 @@ def build() -> str:
     strip_y = content_bottom + 6
     for i, col in enumerate(STRIP):
         body.append(f'<rect x="{COL_X + i * 26}" y="{strip_y:.1f}" '
-                    f'width="22" height="11" rx="2" fill="{col}"/>')
-    # closing prompt with static cursor
-    body.append(text_el(PAD, strip_y + 11, [
-        (cfg["user_at_host"], GREEN), (":", MUTED), ("~", CYAN),
-        ("$ ", MUTED), ("▊", GREEN),
-    ]))
+                    f'width="22" height="11" rx="2" fill="{col}" '
+                    f'class="o" style="{d(strip_y)}"/>')
+    # closing prompt; its block cursor blinks once the output has printed
+    body.append(text_el(PAD, strip_y + 11, prefix,
+                        cls="o", style=d(strip_y + 11)))
+    body.append(text_el(cmd_x, strip_y + 11, [("▊", GREEN)], cls="c2"))
+    blink_start = out_base + (strip_y + 11 - y) * PRINT_RATE
 
     h = int(strip_y + 11 + PAD - 4)
 
@@ -331,6 +361,26 @@ def build() -> str:
         f'{escape(title)}</text>',
     ]
 
+    # ---- animation CSS -----------------------------------------------------
+    # .o lines start hidden and "print"; #cur rides the typed command then
+    # hides; .c2 blinks forever. All delays derive from layout, so output
+    # stays deterministic.
+    css = (
+        "<style>"
+        ".o{opacity:0;animation:o .01s steps(1) both}"
+        "@keyframes o{to{opacity:1}}"
+        f"#cur{{animation:"
+        f"r {len(cmd) * TYPE_STEP:.2f}s steps({len(cmd)}) {TYPE_DELAY:.2f}s both,"
+        f"h .01s steps(1) {out_base:.2f}s forwards}}"
+        f"@keyframes r{{to{{transform:translateX({len(cmd) * CW:.1f}px)}}}}"
+        "@keyframes h{to{opacity:0}}"
+        f".c2{{opacity:0;animation:b 1.06s step-end {blink_start:.2f}s infinite}}"
+        "@keyframes b{0%,49%{opacity:1}50%,100%{opacity:0}}"
+        "@media (prefers-reduced-motion:reduce)"
+        "{.o,.c2{animation:none;opacity:1}#cur{display:none}}"
+        "</style>"
+    )
+
     # Deterministic output: no timestamps, so CI only commits real changes.
     meta = ("<!-- generated by scripts/generate_profile.py — "
             "edit profile.config.json, not this file -->")
@@ -339,7 +389,7 @@ def build() -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{h}" '
         f'viewBox="0 0 {W} {h}" role="img" '
         f'aria-label="{escape(cfg["brand_name"])} — terminal-style developer '
-        f'profile card">\n{meta}\n'
+        f'profile card">\n{meta}\n{css}\n'
         + "\n".join(chrome) + "\n"
         + "\n".join(body) + "\n</svg>\n"
     )
