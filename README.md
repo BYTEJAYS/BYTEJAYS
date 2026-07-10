@@ -1,4 +1,4 @@
-
+<!-- profile README — re-index nudge -->
 <p align="center">
   <img
     src="assets/terminal-profile.svg"
@@ -6,4 +6,3 @@
     alt="BYTEJAY — Jay's terminal-style developer profile: Backend Developer and AI Engineer from India building intelligent backend systems and graph analytics."
   />
 </p>
-
