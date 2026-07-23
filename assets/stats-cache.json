@@ -6,7 +6,7 @@
   "forks": 0,
   "top_languages": [
     "Python",
-    "JavaScript"
+    "HTML"
   ],
   "projects": {
     "bling-blue-team": {
@@ -16,7 +16,7 @@
     },
     "bytejay-site": {
       "description": "ByteJay \u2014 personal portfolio. Next.js, Tailwind, Framer Motion, and one 3D Saint Bernard.",
-      "language": "JavaScript",
+      "language": "HTML",
       "stars": 0
     },
     "BYTEJAYS": {
