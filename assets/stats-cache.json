@@ -1,12 +1,13 @@
 {
-  "public_repos": 4,
+  "public_repos": 5,
   "followers": 3,
   "following": 1,
   "stars": 0,
   "forks": 0,
   "top_languages": [
     "Python",
-    "JavaScript"
+    "JavaScript",
+    "HTML"
   ],
   "projects": {
     "bling-blue-team": {
@@ -22,6 +23,11 @@
     "BYTEJAYS": {
       "description": "BYTEJAY \u2014 terminal-style profile",
       "language": "Python",
+      "stars": 0
+    },
+    "HOSPITAL": {
+      "description": "",
+      "language": "HTML",
       "stars": 0
     },
     "TRANSACTION-GRAPH-ENGINE": {
