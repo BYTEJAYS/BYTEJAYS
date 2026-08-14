@@ -1,15 +1,20 @@
 {
-  "public_repos": 6,
+  "public_repos": 10,
   "followers": 3,
   "following": 1,
   "stars": 0,
   "forks": 0,
   "top_languages": [
     "Python",
-    "JavaScript",
-    "HTML"
+    "TypeScript",
+    "JavaScript"
   ],
   "projects": {
+    "ascension": {
+      "description": "ASCENSION \u2014 a Solo Leveling Life OS. Turn real life into an RPG: every habit, quest, and project is XP. Next.js 14 + TS + Framer Motion + Zustand, local-first, local-Ollama AI coach.",
+      "language": "TypeScript",
+      "stars": 0
+    },
     "bling-blue-team": {
       "description": "Forensic fraud detection engine \u2014 3-tier ML pipeline, XGBoost + SHAP explainability, STR report generation \u00b7 Built for Union Bank of India hackathon",
       "language": "Python",
@@ -25,9 +30,24 @@
       "language": "Python",
       "stars": 0
     },
+    "constellation": {
+      "description": "THE CONSTELLATION \u2014 umbrella for ASCENSION (action) + PRL (memory) + LEGACY (meaning): entrance-hall hub with a 3D galaxy, one start/stop for the whole stack.",
+      "language": "TypeScript",
+      "stars": 0
+    },
     "HOSPITAL": {
       "description": "",
       "language": "HTML",
+      "stars": 0
+    },
+    "legacy": {
+      "description": "PROJECT LEGACY \u2014 The Human Continuity Initiative. Preserve minds, not just memories.",
+      "language": "Python",
+      "stars": 0
+    },
+    "PERSONAL-REALITY-LAYER": {
+      "description": "",
+      "language": "Python",
       "stars": 0
     },
     "PROCTOR_APP": {
