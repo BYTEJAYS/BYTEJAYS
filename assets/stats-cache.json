@@ -1,5 +1,5 @@
 {
-  "public_repos": 10,
+  "public_repos": 11,
   "followers": 3,
   "following": 1,
   "stars": 0,
@@ -38,6 +38,11 @@
     "HOSPITAL": {
       "description": "",
       "language": "HTML",
+      "stars": 0
+    },
+    "jarvis-local": {
+      "description": "Fully-local AI assistant for macOS \u2014 Qwen3.5-9B via llama.cpp, with a Rimuru slime overlay and hold-\u2318 push-to-talk",
+      "language": "TypeScript",
       "stars": 0
     },
     "legacy": {
