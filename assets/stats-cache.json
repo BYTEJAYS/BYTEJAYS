@@ -1,5 +1,5 @@
 {
-  "public_repos": 11,
+  "public_repos": 12,
   "followers": 3,
   "following": 1,
   "stars": 0,
@@ -52,6 +52,11 @@
     },
     "PERSONAL-REALITY-LAYER": {
       "description": "",
+      "language": "Python",
+      "stars": 0
+    },
+    "proctor-exam": {
+      "description": "Proctored online examination: face-verified sign-in, live monitoring grid, and automated cheating detection (MediaPipe landmarks in the browser, YuNet + YOLOv8n on the server)",
       "language": "Python",
       "stars": 0
     },
