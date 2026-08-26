@@ -1,13 +1,12 @@
 {
-  "public_repos": 12,
+  "public_repos": 11,
   "followers": 3,
   "following": 1,
   "stars": 0,
   "forks": 0,
   "top_languages": [
     "Python",
-    "TypeScript",
-    "JavaScript"
+    "TypeScript"
   ],
   "projects": {
     "ascension": {
@@ -18,11 +17,6 @@
     "bling-blue-team": {
       "description": "Forensic fraud detection engine \u2014 3-tier ML pipeline, XGBoost + SHAP explainability, STR report generation \u00b7 Built for Union Bank of India hackathon",
       "language": "Python",
-      "stars": 0
-    },
-    "bytejay-site": {
-      "description": "ByteJay \u2014 personal portfolio. Next.js, Tailwind, Framer Motion, and one 3D Saint Bernard.",
-      "language": "JavaScript",
       "stars": 0
     },
     "BYTEJAYS": {
