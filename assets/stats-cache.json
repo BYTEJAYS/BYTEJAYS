@@ -1,5 +1,5 @@
 {
-  "public_repos": 11,
+  "public_repos": 12,
   "followers": 3,
   "following": 1,
   "stars": 0,
@@ -16,6 +16,11 @@
     },
     "bling-blue-team": {
       "description": "Forensic fraud detection engine \u2014 3-tier ML pipeline, XGBoost + SHAP explainability, STR report generation \u00b7 Built for Union Bank of India hackathon",
+      "language": "Python",
+      "stars": 0
+    },
+    "BOB": {
+      "description": "",
       "language": "Python",
       "stars": 0
     },
