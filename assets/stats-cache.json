@@ -1,12 +1,13 @@
 {
-  "public_repos": 13,
+  "public_repos": 14,
   "followers": 3,
   "following": 1,
   "stars": 0,
   "forks": 0,
   "top_languages": [
     "Python",
-    "TypeScript"
+    "TypeScript",
+    "C#"
   ],
   "projects": {
     "ascension": {
@@ -72,6 +73,11 @@
     "TRANSACTION-GRAPH-ENGINE": {
       "description": "TGIE \u2014 Transaction Graph Intelligence Engine: real-time graph-based fraud detection platform",
       "language": "Python",
+      "stars": 0
+    },
+    "WPF-Todo-App": {
+      "description": "",
+      "language": "C#",
       "stars": 0
     }
   }
