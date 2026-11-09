@@ -1,5 +1,5 @@
 {
-  "public_repos": 14,
+  "public_repos": 15,
   "followers": 3,
   "following": 1,
   "stars": 0,
@@ -7,7 +7,7 @@
   "top_languages": [
     "Python",
     "TypeScript",
-    "C#"
+    "JavaScript"
   ],
   "projects": {
     "ascension": {
@@ -48,6 +48,11 @@
     "legacy": {
       "description": "PROJECT LEGACY \u2014 The Human Continuity Initiative. Preserve minds, not just memories.",
       "language": "Python",
+      "stars": 0
+    },
+    "meals-made-easy": {
+      "description": "",
+      "language": "JavaScript",
       "stars": 0
     },
     "PERSONAL-REALITY-LAYER": {
